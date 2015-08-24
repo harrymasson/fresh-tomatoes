@@ -53,6 +53,17 @@ main_page_head = '''
             top: 0;
             background-color: white;
         }
+        .movie_title{
+            padding-bottom:0px;
+            margin-bottom:0px;
+            margin-top: 6px;
+        }
+        h3.release_year{
+            font-size:110%;
+            color: #aaa;
+            padding-top:0px;
+            margin-top:0px;
+        }
     </style>
     <script type="text/javascript" charset="utf-8">
         // Pause the video when the modal is closed
@@ -121,7 +132,9 @@ main_page_content = '''
 movie_tile_content = '''
 <div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="{trailer_youtube_id}" data-toggle="modal" data-target="#trailer">
     <img src="{poster_image_url}" width="220" height="342">
-    <h2>{movie_title}</h2>
+    <h2 class="movie_title">{movie_title}</h2>
+    <h3 class="release_year">{movie_release_year}</h3>
+    {rating_stars_content}
 </div>
 '''
 
@@ -129,16 +142,13 @@ def create_movie_tiles_content(movies):
     # The HTML content for this section of the page
     content = ''
     for movie in movies:
-        # Extract the youtube ID from the url
-        youtube_id_match = re.search(r'(?<=v=)[^&#]+', movie.trailer_youtube_url)
-        youtube_id_match = youtube_id_match or re.search(r'(?<=be/)[^&#]+', movie.trailer_youtube_url)
-        trailer_youtube_id = youtube_id_match.group(0) if youtube_id_match else None
-
         # Append the tile for the movie with its content filled in
         content += movie_tile_content.format(
             movie_title=movie.title,
             poster_image_url=movie.poster_image_url,
-            trailer_youtube_id=trailer_youtube_id
+            trailer_youtube_id=movie.get_youtube_id(),
+            movie_release_year = movie.release_year,
+            rating_stars_content = create_rating_stars_content(movie.rating)
         )
     return content
 
@@ -156,3 +166,12 @@ def open_movies_page(movies):
   # open the output file in the browser
   url = os.path.abspath(output_file.name)
   webbrowser.open('file://' + url, new=2) # open in a new tab, if possible
+
+def create_rating_stars_content(rating):
+  content = ''
+  for _ in range(rating):
+    content +='<span class="glyphicon glyphicon-star" aria-hidden="true"></span>'
+  for _ in range(5 - rating):
+    content +='<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>'
+  return content
+
