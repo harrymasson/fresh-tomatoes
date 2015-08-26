@@ -167,11 +167,15 @@ def open_movies_page(movies):
   url = os.path.abspath(output_file.name)
   webbrowser.open('file://' + url, new=2) # open in a new tab, if possible
 
-def create_rating_stars_content(rating):
+def create_rating_stars_content(rating, max_rating = 5):
+  """Method that creates star rating HTML content to be displayed from the rating 
+     that is provided as input"""
   content = ''
   for _ in range(rating):
+    # Add filled stars for each rating point
     content +='<span class="glyphicon glyphicon-star" aria-hidden="true"></span>'
-  for _ in range(5 - rating):
+  for _ in range(max_rating - rating):
+    # Add empty stars for each remaining point (default max rating is out of 5)
     content +='<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>'
   return content
 
