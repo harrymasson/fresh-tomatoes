@@ -16,7 +16,7 @@ Change directory into the cloned project:
 
 `cd fresh-tomatoes`
 
-And run the python script 'entertinment_center.py`:
+And run the python script `entertinment_center.py`:
 
 `python ./entertainment_center.py`
 
